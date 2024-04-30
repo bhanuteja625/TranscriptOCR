@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TranscriptOCR App</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 500px;
+            width: 90%;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        form {
+            text-align: center;
+        }
+        .file-input {
+            display: none;
+        }
+        .file-label {
+            display: inline-block;
+            background-color: #3498db;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .file-label:hover {
+            background-color: #2980b9;
+        }
+        .file-info {
+            margin-top: 10px;
+            font-size: 0.8em;
+            color: #888;
+        }
+        .upload-btn {
+            display: inline-block;
+            background-color: #3498db;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .upload-btn:hover {
+            background-color: #2980b9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Upload a File</h1>
+        <form action="/upload" method="post" enctype="multipart/form-data">
+            <label for="file" class="file-label">Choose a file</label>
+            <input type="file" name="file" id="file" class="file-input" accept=".pdf, .png, .jpg, .jpeg, .gif" required>
+            <span class="file-info">Supported formats: PDF, PNG, JPG, JPEG, GIF</span>
+            <button type="submit" class="upload-btn">Upload</button>
+        </form>
+    </div>
+</body>
+</html>

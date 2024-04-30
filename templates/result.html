@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Result</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            align-items: flex-start;
+            gap: 20px;
+        }
+        .image-container {
+            flex: 1 1 30%;
+            text-align: center;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .json-container {
+            flex: 1 1 60%;
+            padding: 10px;
+            background-color: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            overflow: auto;
+        }
+        .json-field {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="image-container">
+            <h2>Test Image</h2>
+            <img src="{{ url_for('static', filename='uploads/test.jpg') }}" alt="Test Image">
+        </div>
+        <div class="image-container">
+            <h2>Processed Image</h2>
+            <img src="{{ url_for('static', filename='uploads/processed_image.jpg') }}" alt="Processed Image">
+        </div>
+        <div class="json-container">
+            <h2>Extracted JSON Data</h2>
+            {% for key, value in json_data.items() %}
+                <div class="json-field"><strong>{{ key }}:</strong> {{ value }}</div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>
