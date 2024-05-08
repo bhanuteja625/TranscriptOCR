@@ -18,7 +18,7 @@ from fuzzywuzzy import fuzz
 class TranscriptOCR():
 
     def __init__(self):
-        self.ocr = PaddleOCR(det_model_dir="./models/det_inference", rec_model_dir="./models/rec_inference",use_angle_cls=False, lang='en')
+        self.ocr = PaddleOCR(use_angle_cls=False, lang='en')
 
         self.target_words = ["course","title","grade","subject","credits","result","marks", "code", "total", "internal",'s.no']
     
@@ -47,7 +47,7 @@ class TranscriptOCR():
         return transformed
     
     def __process_horizontal(self, results, size=1600):
-        y = size/110
+        y = size/90
         horizontal=[]
         i=0
 
@@ -245,6 +245,13 @@ class TranscriptOCR():
         idx, headers = self.__search_headers(processed_horizontal, processed_headers)
 
         headers = sorted(headers, key=lambda x: x[0][0])
+        counts = {}
+        for sublist in headers:
+            for i, element in enumerate(sublist):
+                if isinstance(element, str):
+                    counts[element] = counts.get(element, 0) + 1
+                    if counts[element] > 1:
+                        sublist[i] = f"{element}_{counts[element]}"
 
         header_names = [header[1] for header in headers]
 
@@ -292,11 +299,10 @@ class TranscriptOCR():
             prev_y = y
             prev_dist = dist
 
-
         dfs = [pd.DataFrame([row_data], columns=header_names) for row_data in data]
         df = pd.concat(dfs, ignore_index=True)
         df = self.__process_df(df)
-        return df.to_dict()
+        return df.to_dict(orient="records")
     
     def __find_target_box(self, data, target_words, non_target_words=[]):
         bounding_boxes = []
@@ -340,22 +346,23 @@ class TranscriptOCR():
         target_gpa=['cgpa','sgpa','gpa']
         non_target_gpa = []
 
-
-
         name_field = self.__find_target_box(processed_results, target_name, non_target_name)
 
         if len(name_field)==0:
             name=""
         else:
             name = name_field[0][1]
-            if len(name.split(" "))>4 or ':' in name:
+        
+            if ':' in name and len(name.split(" "))>2:
+                name=name[name.index(':')+1:]
+            elif len(name.split(" "))>4:
                 name_list=name.split(" ")
                 id = list([0])
                 for target in target_name:
                     i = name.find(target)
                     if i>-1:
                         id.append(i+len(target))
-                name = name[max(id):]
+                name = name[max(id)+1:]
 
             else:
                 name = self.__find_next(preprocessed_x,name_field[0])[1]
@@ -372,13 +379,15 @@ class TranscriptOCR():
             branch=""
         else:
             branch=branch[0][1]
+        if ":" in branch:
+            branch=branch[branch.index(":")+1:]
 
         gpa_fields = self.__find_target_box(processed_results, target_gpa)
         gpa_fields = [txt for txt in gpa_fields if len(txt[1].split(" "))<3]
         gpas = {}
         if len(gpa_fields)>0:
             for i in gpa_fields:
-                gpas[i[1]] = self.__find_next(preprocessed_x, i)
+                gpas[i[1]] = self.__find_next(preprocessed_x, i)[1]
 
         return name, university, branch, gpas
     
