@@ -1,0 +1,7 @@
+pdf2image
+fuzzywuzzy
+paddleocr==2.7.3
+paddlepaddle==2.6.1
+Pillow
+numpy
+pandas
